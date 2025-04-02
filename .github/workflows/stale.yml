@@ -1,0 +1,25 @@
+name: "Mark or Close Stale Issues and PRs"
+
+on:
+  workflow_call:  # This makes it a shared workflow
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          days-before-stale: 30
+          stale-issue-label: stale
+          stale-pr-label: stale
+          days-before-close: 10
+          delete-branch: true
+          stale-issue-message: |
+            This issue has been automatically marked as stale because it has been open for 30 days
+            with no activity. Remove stale label or comment, or this issue will be closed in 10 days.
+          stale-pr-message: |
+            This PR has been automatically marked as stale because it has been open for 30 days
+            with no activity. Remove stale label or comment, or this PR will be closed in 10 days.
+          close-issue-message: "This issue was automatically closed due to inactivity."
+          close-pr-message: "This PR was automatically closed due to inactivity."
