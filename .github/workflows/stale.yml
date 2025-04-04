@@ -1,7 +1,7 @@
 name: "Mark or Close Stale Issues and PRs"
 
 on:
-  workflow_call:  # This makes it a shared workflow
+  workflow_call:
 
 jobs:
   stale:
@@ -10,19 +10,27 @@ jobs:
       - uses: actions/stale@v9
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          days-before-stale: 30
+
+          #  Test-friendly short durations
+          days-before-stale: 0
+          days-before-close: 1
+
+          # Optional: Test-specific labels/messages
           stale-issue-label: stale
           stale-pr-label: stale
-          days-before-close: 10
           delete-branch: true
+
           stale-issue-message: |
-            This issue has been automatically marked as stale because it has been open for 30 days
-            with no activity. Remove stale label or comment, or this issue will be closed in 10 days.
+            This issue has been marked as stale for testing purposes.
+            If no activity occurs, it will be closed **within 1 day**.
+
           stale-pr-message: |
-            This PR has been automatically marked as stale because it has been open for 30 days
-            with no activity. Remove stale label or comment, or this PR will be closed in 10 days.
-          close-issue-message: "This issue was automatically closed due to inactivity."
-          close-pr-message: "This PR was automatically closed due to inactivity."
+            ⚠This PR has been marked as stale for testing purposes.
+            If no activity occurs, it will be closed **within 1 day**.
+
+          close-issue-message: " This issue was auto-closed during testing."
+          close-pr-message: " This PR was auto-closed during testing."
+
 
 #           name: "Use Shared Stale Workflow"
 
