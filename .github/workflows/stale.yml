@@ -2,6 +2,9 @@ name: "Mark or Close Stale Issues and PRs"
 
 on:
   workflow_call:
+      secrets:
+      GITHUB_TOKEN:
+
 
 jobs:
   stale:
