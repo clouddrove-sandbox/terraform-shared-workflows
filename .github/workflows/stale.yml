@@ -23,3 +23,36 @@ jobs:
             with no activity. Remove stale label or comment, or this PR will be closed in 10 days.
           close-issue-message: "This issue was automatically closed due to inactivity."
           close-pr-message: "This PR was automatically closed due to inactivity."
+
+#           name: "Use Shared Stale Workflow"
+
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'  # Runs daily
+
+# jobs:
+#   stale:
+#     uses: clouddrove-sandbox/terraform-shared-workflows/.github/workflows/stale.yml@master
+#     with:
+      # repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+#       Ye workflow daily run karega (cron: '0 0 * * *' → har din raat ke 12 baje UTC par).
+
+# Issues aur PRs ko stale mark karega agar 30 din tak koi activity nahi hoti.
+
+# Agar 10 din tak aur activity nahi hoti, toh issue ya PR close kar diya jayega.
+
+# Agar kisi issue ya PR par "bug", "wip", ya "on-hold" label laga ho toh usse stale nahi mark karega.
+
+# Agar ek PR stale hone ke baad close ho jaye, toh uski branch automatically delete ho jayegi.
+
+
+# Sandbox Org me ek repo banega (terraform-shared-workflows)
+
+# Ye repo shared workflows store karega (stale issues & stale PRs)
+
+# Jo bhi Terraform module repos hai, wo shared workflows ko call kar sakenge
+
+# Agar future me changes chahiye, sirf shared repo update karna hoga (baaki repositories automatically latest version use karengi)
+  
