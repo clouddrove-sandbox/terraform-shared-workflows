@@ -20,8 +20,8 @@ jobs:
           issue-comment: >
             I'm going to lock this issue because it has been closed for *30 days* ⏳. This helps our maintainers find and focus on the active issues.
             If you have found a problem that seems similar to this, please open a new issue and complete the issue template so we can capture all the details necessary to investigate further.
-          issue-inactive-days: '1'
+          issue-inactive-days: '0.005'
           pr-comment: >
             I'm going to lock this pull request because it has been closed for *30 days* ⏳. This helps our maintainers find and focus on the active issues.
             If you have found a problem that seems related to this change, please open a new issue and complete the issue template so we can capture all the details necessary to investigate further.
-          pr-inactive-days: '1'
+          pr-inactive-days: '0.005'
