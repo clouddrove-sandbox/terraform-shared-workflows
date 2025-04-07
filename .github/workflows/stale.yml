@@ -2,34 +2,30 @@ name: "Mark or Close Stale Issues and PRs"
 
 on:
   workflow_call:
-
-jobs:
-  secrets:
-   repo-token:
+    secrets:
+      repo-token:
         required: true
-        
+jobs:      
   stale:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/stale@v9
         with:
            repo-token: ${{ secrets.repo-token }}  
-         
-          days-before-stale: 0
-          days-before-close: 1
-
-       
-          stale-issue-label: stale
-          stale-pr-label: stale
-          delete-branch: true
-
-          stale-issue-message: |
+           days-before-stale: 0
+           days-before-close: 1
+          
+           stale-issue-label: stale
+           stale-pr-label: stale
+           
+           delete-branch: true
+          
+           stale-issue-message: |
             This issue has been marked as stale for testing purposes.
             If no activity occurs, it will be closed **within 1 day**.
-
-          stale-pr-message: |
+            stale-pr-message: |
             This PR has been marked as stale for testing purposes.
             If no activity occurs, it will be closed **within 1 day**.
 
-          close-issue-message: "This issue was auto-closed during testing."
-          close-pr-message: "This PR was auto-closed during testing."
+           close-issue-message: "This issue was auto-closed during testing."
+           close-pr-message: "This PR was auto-closed during testing."
