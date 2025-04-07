@@ -1,15 +1,11 @@
 name: 'Validate PR title'
+
 on:
   workflow_call:
-    inputs:
-      working_directory:
-        required: false
-        type: string
-        description: 'Root directory of the terraform where all resources exist.'
     secrets:
       repo-token:
-        required: false
-        description: 'Azure Credentials to install Azure in github runner.'
+        required: true
+        description: 'GitHub token to validate PR title.'
 
 jobs:
   main:
@@ -18,7 +14,7 @@ jobs:
     steps:
       - uses: amannn/action-semantic-pull-request@v5.5.3
         env:
-          repo-token: ${{ secrets.repo-token }}
+          GITHUB_TOKEN: ${{ secrets.repo-token }}   # ✅ FIXED HERE
         with:
           types: |
             fix
@@ -34,6 +30,83 @@ jobs:
             starts with an uppercase character.
           wip: true
           validateSingleCommit: false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# name: 'Validate PR title'
+# on:
+#   workflow_call:
+#     inputs:
+#       working_directory:
+#         required: false
+#         type: string
+#         description: 'Root directory of the terraform where all resources exist.'
+#     secrets:
+#       repo-token:
+#         required: true
+#         description: 'Azure Credentials to install Azure in github runner.'
+
+# jobs:
+#   main:
+#     name: Validate PR title
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: amannn/action-semantic-pull-request@v5.5.3
+#         env:
+#           repo-token: ${{ secrets.repo-token }}
+#         with:
+#           types: |
+#             fix
+#             feat
+#             docs
+#             ci
+#             chore
+#           requireScope: false
+#           subjectPattern: ^[A-Z].+$
+#           subjectPatternError: |
+#             The subject "{subject}" found in the pull request title "{title}"
+#             didn't match the configured pattern. Please ensure that the subject
+#             starts with an uppercase character.
+#           wip: true
+#           validateSingleCommit: false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # name: 'Validate PR title'
