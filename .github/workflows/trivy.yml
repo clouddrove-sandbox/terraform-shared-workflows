@@ -7,9 +7,9 @@
             description: 'Directory where main.tf exist of the module.'
             required: false
             type: string
-            default: './examples/'
+            default: '.'
         secrets:
-          GITHUB:
+          TOKEN:
             required: true
             description: 'PAT of the user to run the jobs.'
     jobs:
@@ -43,6 +43,6 @@
             with:
               tool_name: 'Trivy'
               fail_level: false
-              github_token: ${{ secrets.GITHUB }}
+              github_token: ${{ secrets.TOKEN }}
               level: warning
             continue-on-error: true

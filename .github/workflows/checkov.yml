@@ -19,7 +19,7 @@
             type: string
             default: ''
         secrets:
-          GITHUB:
+          TOKEN:
             required: true
             description: 'PAT of the user to run the jobs.'
     jobs:
@@ -67,5 +67,5 @@
               skip_check: ${{ inputs.skip_check }}
               output_format: github_failed_only
             env:
-              GITHUB_TOKEN: ${{ secrets.GITHUB }}
+              TOKEN: ${{ secrets.TOKEN }}
             continue-on-error: true
