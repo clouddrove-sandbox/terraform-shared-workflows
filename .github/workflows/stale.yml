@@ -5,6 +5,12 @@ on:
     secrets:
       repo-token:
         required: true
+
+
+permissions:
+  issues: write
+  pull-requests: write
+  
 jobs:      
   stale:
     runs-on: ubuntu-latest
