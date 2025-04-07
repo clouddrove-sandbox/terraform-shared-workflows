@@ -4,14 +4,17 @@ on:
   workflow_call:
 
 jobs:
+  secrets:
+   repo-token:
+        required: true
+        
   stale:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/stale@v9
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-
-        
+           repo-token: ${{ secrets.repo-token }}  
+         
           days-before-stale: 0
           days-before-close: 1
 
