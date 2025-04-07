@@ -1,0 +1,48 @@
+---
+    name: trivy
+    on:
+      workflow_call:
+        inputs:
+          working_directory:
+            description: 'Directory where main.tf exist of the module.'
+            required: false
+            type: string
+            default: './examples/'
+        secrets:
+          GITHUB:
+            required: true
+            description: 'PAT of the user to run the jobs.'
+    jobs:
+      trivy:
+        name: trivy sarif report
+        runs-on: ubuntu-latest
+        steps:
+          - name: Clone repo
+            uses: actions/checkout@master
+    
+          - name: Run Trivy vulnerability scanner in IaC mode
+            uses: aquasecurity/trivy-action@master
+            with:
+              scan-type: 'config'
+              scan-ref: ${{ inputs.working_directory }}
+              hide-progress: false
+              format: 'sarif'
+              output: 'trivy-results.sarif'
+              exit-code: '1'
+              severity: 'CRITICAL,HIGH'
+    
+          - name: Upload Trivy scan results to GitHub Security tab
+            uses: github/codeql-action/upload-sarif@v3
+            with:
+              sarif_file: 'trivy-results.sarif'
+            continue-on-error: true
+    
+          - name: Annotate PR with Trivy results
+            if: github.event_name == 'pull_request'
+            uses: reviewdog/action-suggester@v1
+            with:
+              tool_name: 'Trivy'
+              fail_level: false
+              github_token: ${{ secrets.GITHUB }}
+              level: warning
+            continue-on-error: true

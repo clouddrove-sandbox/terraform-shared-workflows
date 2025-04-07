@@ -25,7 +25,7 @@ jobs:
            stale-issue-message: |
             This issue has been marked as stale for testing purposes.
             If no activity occurs, it will be closed **within 1 day**.
-            stale-pr-message: |
+           stale-pr-message: |
             This PR has been marked as stale for testing purposes.
             If no activity occurs, it will be closed **within 1 day**.
 

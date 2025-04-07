@@ -1,0 +1,71 @@
+---
+    name: checkov
+    on:
+      workflow_call:
+        inputs:
+          working_directory:
+            description: 'Directory where main.tf exist of the module.'
+            required: false
+            type: string
+            default: './examples/'
+          framework:
+            description: 'Scanning framework to use (terraform or all)'
+            required: false
+            type: string
+            default: 'terraform'
+          skip_check:
+            description: 'Comma-separated list of checks to skip'
+            required: false
+            type: string
+            default: ''
+        secrets:
+          GITHUB:
+            required: true
+            description: 'PAT of the user to run the jobs.'
+    jobs:
+      checkov:
+        name: checkov sarif report
+        runs-on: ubuntu-latest
+        steps:
+          - name: Clone repo
+            uses: actions/checkout@master
+    
+          - name: Set up Python
+            uses: actions/setup-python@v4
+            with:
+              python-version: '3.10'
+    
+          - name: Install checkov
+            run: |
+              python -m pip install --upgrade pip
+              pip install checkov
+    
+          - name: Run checkov scan
+            id: checkov
+            run: |
+              checkov -d ${{ inputs.working_directory }} \
+                --framework ${{ inputs.framework }} \
+                --output sarif \
+                --output-file-path checkov-results.sarif \
+                --soft-fail \
+                ${{ inputs.skip_check != '' && format('--skip-check {0}', inputs.skip_check) || '' }}
+            continue-on-error: true
+    
+          - name: Upload checkov scan results to GitHub Security tab
+            uses: github/codeql-action/upload-sarif@v3
+            with:
+              sarif_file: checkov-results.sarif
+            continue-on-error: true
+    
+          - name: PR Comments
+            if: github.event_name == 'pull_request'
+            uses: bridgecrewio/checkov-action@master
+            with:
+              directory: ${{ inputs.working_directory }}
+              framework: ${{ inputs.framework }}
+              soft_fail: true
+              skip_check: ${{ inputs.skip_check }}
+              output_format: github_failed_only
+            env:
+              GITHUB_TOKEN: ${{ secrets.GITHUB }}
+            continue-on-error: true
