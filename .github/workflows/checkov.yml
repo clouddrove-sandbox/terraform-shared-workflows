@@ -7,7 +7,7 @@
             description: 'Directory where main.tf exist of the module.'
             required: false
             type: string
-            default: './examples/'
+            default: '.'
           framework:
             description: 'Scanning framework to use (terraform or all)'
             required: false
