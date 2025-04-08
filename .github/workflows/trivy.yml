@@ -7,7 +7,7 @@
             description: 'Directory where main.tf exist of the module.'
             required: false
             type: string
-            default: '.'
+            default: './'
         secrets:
           TOKEN:
             required: true
@@ -19,6 +19,9 @@
         steps:
           - name: Clone repo
             uses: actions/checkout@master
+
+          - name: Check working directory
+            run: ls -la ${{ inputs.working_directory || './' }}
     
           - name: Run Trivy vulnerability scanner in IaC mode
             uses: aquasecurity/trivy-action@0.30.0
