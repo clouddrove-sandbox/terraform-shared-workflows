@@ -21,10 +21,18 @@
             uses: actions/checkout@master
 
           - name: Check working directory
-            run: ls -la ${{ inputs.working_directory || './' }}
+            run: |
+              ls -la ${{ inputs.working_directory || './' }}
+              trivy --version
+
+          # - name: Install Trivy
+          #  run: |
+          #   sudo apt-get update
+          #   wget https://github.com/aquasecurity/trivy/releases/download/v0.61.0/trivy_0.61.0_Linux-64bit.deb
+          #   sudo dpkg -i trivy_0.61.0_Linux-64bit.deb
     
           - name: Run Trivy vulnerability scanner in IaC mode
-            uses: aquasecurity/trivy-action@0.30.0
+            uses: aquasecurity/trivy-action@master
             with:
               scan-type: 'config'
               scan-ref: ${{ inputs.working_directory }}
