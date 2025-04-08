@@ -36,7 +36,8 @@
             uses: aquasecurity/trivy-action@master
             with:
               scan-type: 'config'
-              scan-ref: ${{ inputs.working_directory }}
+              # scan-ref: ${{ inputs.working_directory }}
+              scan-ref: examples/aws_managed/
               hide-progress: false
               format: 'sarif'
               output: 'trivy-results.sarif'
