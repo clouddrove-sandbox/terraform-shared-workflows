@@ -22,7 +22,9 @@
 
           - name: Check working directory
             run: |
-              ls -la ${{ inputs.working_directory || './' }}
+              cd examples/aws_managed/
+              ls -la
+#              ls -la ${{ inputs.working_directory || './' }}
 
           # - name: Install Trivy
           #  run: |
