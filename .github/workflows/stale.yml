@@ -1,3 +1,48 @@
+# name: "Mark or Close Stale Issues and PRs"
+
+# on:
+#   workflow_call:
+#     secrets:
+#       repo-token:
+#         required: true
+
+  
+# jobs:      
+#   stale:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/stale@v9
+#         with:
+#            repo-token: ${{ secrets.repo-token }}  
+#            days-before-stale: 00.005
+#            days-before-close: 0.005
+          
+#            stale-issue-label: stale
+#            stale-pr-label: stale
+           
+#            delete-branch: true
+          
+#            stale-issue-message: |
+#             This issue has been marked as stale for testing purposes.
+#             If no activity occurs, it will be closed **within 1 day**.
+#            stale-pr-message: |
+#             This PR has been marked as stale for testing purposes.
+#             If no activity occurs, it will be closed **within 1 day**.
+
+#            close-issue-message: "This issue was auto-closed during testing."
+#            close-pr-message: "This PR was auto-closed during testing."
+
+
+
+
+
+
+
+
+
+
+
+
 name: "Mark or Close Stale Issues and PRs"
 
 on:
@@ -5,7 +50,6 @@ on:
     secrets:
       repo-token:
         required: true
-
   
 jobs:      
   stale:
@@ -14,20 +58,17 @@ jobs:
       - uses: actions/stale@v9
         with:
            repo-token: ${{ secrets.repo-token }}  
-           days-before-stale: 00.005
-           days-before-close: 0.005
-          
+           days-before-stale: 0.0417  # ~1 hour
+           days-before-close: 0.0417  # ~1 hour
            stale-issue-label: stale
            stale-pr-label: stale
-           
            delete-branch: true
-          
            stale-issue-message: |
             This issue has been marked as stale for testing purposes.
-            If no activity occurs, it will be closed **within 1 day**.
+            If no activity occurs, it will be closed **within 1 hour**.
            stale-pr-message: |
             This PR has been marked as stale for testing purposes.
-            If no activity occurs, it will be closed **within 1 day**.
+            If no activity occurs, it will be closed **within 1 hour**.
 
            close-issue-message: "This issue was auto-closed during testing."
            close-pr-message: "This PR was auto-closed during testing."
