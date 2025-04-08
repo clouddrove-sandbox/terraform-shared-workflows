@@ -58,8 +58,8 @@ jobs:
       - uses: actions/stale@v9
         with:
            repo-token: ${{ secrets.repo-token }}  
-           days-before-stale: 0.005  # ~1 hour
-           days-before-close: 0.005  # ~1 hour
+           days-before-stale: 0.0034722 
+           days-before-close: 0.0034722
            stale-issue-label: stale
            stale-pr-label: stale
            delete-branch: true
