@@ -21,7 +21,7 @@
             uses: actions/checkout@master
     
           - name: Run Trivy vulnerability scanner in IaC mode
-            uses: aquasecurity/trivy-action@master
+            uses: aquasecurity/trivy-action@0.30.0
             with:
               scan-type: 'config'
               scan-ref: ${{ inputs.working_directory }}
