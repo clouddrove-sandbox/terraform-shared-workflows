@@ -50,6 +50,12 @@
                 --soft-fail \
                 ${{ inputs.skip_check != '' && format('--skip-check {0}', inputs.skip_check) || '' }}
             continue-on-error: true
+
+          - name: Upload Artifact
+            uses: actions/upload-artifact@v4
+            with:
+              name: checkov-results
+              path: 'checkov-results.sarif'
     
           - name: Upload checkov scan results to GitHub Security tab
             uses: github/codeql-action/upload-sarif@v3
