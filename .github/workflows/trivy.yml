@@ -48,6 +48,7 @@
             with:
               scan-type: config
               hide-progress: true
+              exit-code: '1'
               output: trivy.txt
 
           - name: Publish Trivy Output to Summary
