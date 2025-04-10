@@ -19,42 +19,50 @@
         steps:
           - name: Clone repo
             uses: actions/checkout@master
+    
+          # - name: Run Trivy vulnerability scanner in IaC mode
+          #   uses: aquasecurity/trivy-action@master
+          #   with:
+          #     scan-type: 'config'
+          #     scan-ref: ${{ inputs.working_directory }}
+          #     hide-progress: false
+          #     format: 'sarif'
+          #     output: 'trivy-results.sarif'
+          #     exit-code: '0'
+          #     severity: 'CRITICAL,HIGH'
 
-          - name: Check working directory
+          # - name: Upload Artifact
+          #   uses: actions/upload-artifact@v4
+          #   with:
+          #     name: trivy-results
+          #     path: 'trivy-results.sarif'
+    
+          # - name: Upload Trivy scan results to GitHub Security tab
+          #   uses: github/codeql-action/upload-sarif@v3
+          #   with:
+          #     sarif_file: 'trivy-results.sarif'
+          #   continue-on-error: true
+
+          - name: Run Trivy scanner
+            uses: aquasecurity/trivy-action@0.28.0
+            with:
+              scan-type: config
+              hide-progress: true
+              output: trivy.txt
+
+          - name: Publish Trivy Output to Summary
             run: |
-              cd examples/aws_managed/
-              ls -la
-#              ls -la ${{ inputs.working_directory || './' }}
-
-          # - name: Install Trivy
-          #  run: |
-          #   sudo apt-get update
-          #   wget https://github.com/aquasecurity/trivy/releases/download/v0.61.0/trivy_0.61.0_Linux-64bit.deb
-          #   sudo dpkg -i trivy_0.61.0_Linux-64bit.deb
-    
-          - name: Run Trivy vulnerability scanner in IaC mode
-            uses: aquasecurity/trivy-action@master
-            with:
-              scan-type: 'config'
-              scan-ref: ${{ inputs.working_directory }}
-              # scan-ref: examples/aws_managed/
-              hide-progress: false
-              format: 'sarif'
-              output: 'trivy-results.sarif'
-              exit-code: '0'
-              severity: 'CRITICAL,HIGH'
-
-          - name: Upload Artifact
-            uses: actions/upload-artifact@v4
-            with:
-              name: trivy-results
-              path: 'trivy-results.sarif'
-    
-          - name: Upload Trivy scan results to GitHub Security tab
-            uses: github/codeql-action/upload-sarif@v3
-            with:
-              sarif_file: 'trivy-results.sarif'
-            continue-on-error: true
+              if [[ -s trivy.txt ]]; then
+                {
+                  echo "### Security Output"
+                  echo "<details><summary>Click to expand</summary>"
+                  echo ""
+                  echo '```terraform'
+                  cat trivy.txt
+                  echo '```'
+                  echo "</details>"
+                } >> $GITHUB_STEP_SUMMARY
+              fi
     
           - name: Annotate PR with Trivy results
             if: github.event_name == 'pull_request'
