@@ -20,16 +20,16 @@
           - name: Clone repo
             uses: actions/checkout@master
     
-          # - name: Run Trivy vulnerability scanner in IaC mode
-          #   uses: aquasecurity/trivy-action@master
-          #   with:
-          #     scan-type: 'config'
-          #     scan-ref: ${{ inputs.working_directory }}
-          #     hide-progress: false
-          #     format: 'sarif'
-          #     output: 'trivy-results.sarif'
-          #     exit-code: '0'
-          #     severity: 'CRITICAL,HIGH'
+          - name: Run Trivy vulnerability scanner in IaC mode
+            uses: aquasecurity/trivy-action@master
+            with:
+              scan-type: 'config'
+              scan-ref: ${{ inputs.working_directory }}
+              hide-progress: false
+              format: 'sarif'
+              output: 'trivy-results.sarif'
+              exit-code: '0'
+              severity: 'CRITICAL,HIGH'
 
           # - name: Upload Artifact
           #   uses: actions/upload-artifact@v4
@@ -37,32 +37,37 @@
           #     name: trivy-results
           #     path: 'trivy-results.sarif'
     
-          # - name: Upload Trivy scan results to GitHub Security tab
-          #   uses: github/codeql-action/upload-sarif@v3
-          #   with:
-          #     sarif_file: 'trivy-results.sarif'
-          #   continue-on-error: true
-
-          - name: Run Trivy scanner
-            uses: aquasecurity/trivy-action@0.28.0
+          - name: Upload Trivy scan results to GitHub Security tab
+            uses: github/codeql-action/upload-sarif@v3
             with:
-              scan-type: config
-              hide-progress: true
-              output: trivy.txt
+              sarif_file: 'trivy-results.sarif'
+            continue-on-error: true
 
-          - name: Publish Trivy Output to Summary
-            run: |
-              if [[ -s trivy.txt ]]; then
-                {
-                  echo "### Security Output"
-                  echo "<details><summary>Click to expand</summary>"
-                  echo ""
-                  echo '```terraform'
-                  cat trivy.txt
-                  echo '```'
-                  echo "</details>"
-                } >> $GITHUB_STEP_SUMMARY
-              fi
+         
+#####---------------------------------------------------------------------######
+#########  Without Enabling Advance Security Features  #########
+#####---------------------------------------------------------------------######
+         
+          # - name: Run Trivy scanner
+          #   uses: aquasecurity/trivy-action@0.28.0
+          #   with:
+          #     scan-type: config
+          #     hide-progress: true
+          #     output: trivy.txt
+
+          # - name: Publish Trivy Output to Summary
+          #   run: |
+          #     if [[ -s trivy.txt ]]; then
+          #       {
+          #         echo "### Security Output"
+          #         echo "<details><summary>Click to expand</summary>"
+          #         echo ""
+          #         echo '```terraform'
+          #         cat trivy.txt
+          #         echo '```'
+          #         echo "</details>"
+          #       } >> $GITHUB_STEP_SUMMARY
+          #     fi
     
           - name: Annotate PR with Trivy results
             if: github.event_name == 'pull_request'
