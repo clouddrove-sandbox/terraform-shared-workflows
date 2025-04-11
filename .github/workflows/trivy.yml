@@ -21,6 +21,7 @@
             uses: actions/checkout@master
     
           - name: Run Trivy vulnerability scanner in IaC mode
+            id: trivy-scan
             uses: aquasecurity/trivy-action@master
             with:
               scan-type: 'config'
@@ -30,18 +31,56 @@
               output: 'trivy-results.sarif'
               exit-code: '1'
               severity: 'CRITICAL,HIGH'
+            continue-on-error: true
 
-          # - name: Upload Artifact
-          #   uses: actions/upload-artifact@v4
-          #   with:
-          #     name: trivy-results
-          #     path: 'trivy-results.sarif'
     
           - name: Upload Trivy scan results to GitHub Security tab
             uses: github/codeql-action/upload-sarif@v3
             with:
               sarif_file: 'trivy-results.sarif'
             continue-on-error: true
+
+          - name: Check if vulnerabilities were found
+            id: check-vuln
+            run: |
+              if [ "${{ steps.trivy-scan.outcome }}" == "failure" ]; then
+                echo "vulnerabilities_found=true" >> $GITHUB_OUTPUT
+              else
+                echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
+              fi
+    
+          - name: Get Trivy scan logs
+            if: steps.check-vuln.outputs.vulnerabilities_found == 'true'
+            id: get-logs
+            run: |
+              echo "TRIVY_OUTPUT<<EOF" >> $GITHUB_ENV
+              cat trivy-results.sarif | jq -r '.runs[0].results[] | "- " + .ruleId + ": " + .message.text' >> $GITHUB_ENV
+              echo "EOF" >> $GITHUB_ENV
+    
+          - name: Comment on PR with vulnerabilities
+            if: steps.check-vuln.outputs.vulnerabilities_found == 'true' && github.event_name == 'pull_request'
+            uses: actions/github-script@v6
+            with:
+              github-token: ${{ secrets.TOKEN }}
+              script: |
+                const issueNumber = context.issue.number;
+                const owner = context.repo.owner;
+                const repo = context.repo.repo;
+                
+                const body = `## ❌ Trivy Security Scan Failed
+                
+                The following security vulnerabilities were found in your Terraform code:
+                
+                ${{ env.TRIVY_OUTPUT }}
+                
+                Please address these issues before merging this pull request.`;
+                
+                await github.rest.issues.createComment({
+                  owner,
+                  repo,
+                  issue_number: issueNumber,
+                  body
+                });
 
          
 #####---------------------------------------------------------------------######
@@ -68,13 +107,3 @@
           #         echo "</details>"
           #       } >> $GITHUB_STEP_SUMMARY
           #     fi
-    
-          - name: Annotate PR with Trivy results
-            if: github.event_name == 'pull_request'
-            uses: reviewdog/action-suggester@v1
-            with:
-              tool_name: 'Trivy'
-              fail_level: false
-              github_token: ${{ secrets.TOKEN }}
-              level: warning
-            continue-on-error: true
