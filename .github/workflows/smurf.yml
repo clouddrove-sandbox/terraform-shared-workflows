@@ -283,7 +283,7 @@
               aws configure set region $AWS_REGION
     
           - name: Authenticate Google Cloud with WIP and Service Account
-            if: inputs.gcp_auth_method == 'wip34'
+            if: inputs.gcp_auth_method == 'wip'
             uses: google-github-actions/auth@v2
             with:
               token_format: access_token
