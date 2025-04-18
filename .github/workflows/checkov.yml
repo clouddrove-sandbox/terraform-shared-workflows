@@ -63,15 +63,21 @@
               sarif_file: checkov-results.sarif
             continue-on-error: true
     
-          - name: PR Comments
-            if: github.event_name == 'pull_request'
-            uses: bridgecrewio/checkov-action@master
+          - name: PR commenter
+            uses: tfsec/tfsec-pr-commenter-action@v1.3.1
             with:
-              directory: ${{ inputs.working_directory }}
-              framework: ${{ inputs.framework }}
-              soft_fail: true
-              skip_check: ${{ inputs.skip_check }}
-              output_format: github_failed_only
-            env:
-              TOKEN: ${{ secrets.TOKEN }}
-            continue-on-error: true
+              github_token: ${{ secrets.TOKEN }}
+              working_directory: ${{ inputs.working_directory}}
+          
+            # - name: PR Comments
+          #   if: github.event_name == 'pull_request'
+          #   uses: bridgecrewio/checkov-action@master
+          #   with:
+          #     directory: ${{ inputs.working_directory }}
+          #     framework: ${{ inputs.framework }}
+          #     soft_fail: true
+          #     skip_check: ${{ inputs.skip_check }}
+          #     output_format: github_failed_only
+          #   env:
+          #     TOKEN: ${{ secrets.TOKEN }}
+          #   continue-on-error: true
