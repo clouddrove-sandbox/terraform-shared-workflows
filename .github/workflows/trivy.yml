@@ -48,39 +48,45 @@
               else
                 echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
               fi
-    
-          - name: Get Trivy scan logs
-            if: steps.check-vuln.outputs.vulnerabilities_found == 'true'
-            id: get-logs
-            run: |
-              echo "TRIVY_OUTPUT<<EOF" >> $GITHUB_ENV
-              cat trivy-results.sarif | jq -r '.runs[0].results[] | "- " + .ruleId + ": " + .message.text' >> $GITHUB_ENV
-              echo "EOF" >> $GITHUB_ENV
-    
-          - name: Comment on PR with vulnerabilities
-            if: steps.check-vuln.outputs.vulnerabilities_found == 'true' && github.event_name == 'pull_request'
-            uses: actions/github-script@v6
+
+          - name: PR commenter
+            uses: tfsec/tfsec-pr-commenter-action@v1.3.1
             with:
-              github-token: ${{ secrets.TOKEN }}
-              script: |
-                const issueNumber = context.issue.number;
-                const owner = context.repo.owner;
-                const repo = context.repo.repo;
+              github_token: ${{ secrets.TOKEN }}
+              working_directory: ${{ inputs.working_directory}}
+    
+          # - name: Get Trivy scan logs
+          #   if: steps.check-vuln.outputs.vulnerabilities_found == 'true'
+          #   id: get-logs
+          #   run: |
+          #     echo "TRIVY_OUTPUT<<EOF" >> $GITHUB_ENV
+          #     cat trivy-results.sarif | jq -r '.runs[0].results[] | "- " + .ruleId + ": " + .message.text' >> $GITHUB_ENV
+          #     echo "EOF" >> $GITHUB_ENV
+    
+          # - name: Comment on PR with vulnerabilities
+          #   if: steps.check-vuln.outputs.vulnerabilities_found == 'true' && github.event_name == 'pull_request'
+          #   uses: actions/github-script@v6
+          #   with:
+          #     github-token: ${{ secrets.TOKEN }}
+          #     script: |
+          #       const issueNumber = context.issue.number;
+          #       const owner = context.repo.owner;
+          #       const repo = context.repo.repo;
                 
-                const body = `## ❌ Trivy Security Scan Failed
+          #       const body = `## ❌ Trivy Security Scan Failed
                 
-                The following security vulnerabilities were found in your Terraform code:
+          #       The following security vulnerabilities were found in your Terraform code:
                 
-                ${{ env.TRIVY_OUTPUT }}
+          #       ${{ env.TRIVY_OUTPUT }}
                 
-                Please address these issues before merging this pull request.`;
+          #       Please address these issues before merging this pull request.`;
                 
-                await github.rest.issues.createComment({
-                  owner,
-                  repo,
-                  issue_number: issueNumber,
-                  body
-                });
+          #       await github.rest.issues.createComment({
+          #         owner,
+          #         repo,
+          #         issue_number: issueNumber,
+          #         body
+          #       });
 
          
 #####---------------------------------------------------------------------######
