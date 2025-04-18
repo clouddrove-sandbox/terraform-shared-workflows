@@ -8,6 +8,16 @@
             required: false
             type: string
             default: './'
+          framework:
+            description: 'Scanning framework to use (terraform or all)'
+            required: false
+            type: string
+            default: 'terraform'
+          skip_check:
+            description: 'Comma-separated list of checks to skip'
+            required: false
+            type: string
+            default: ''
         secrets:
           TOKEN:
             required: true
@@ -49,11 +59,18 @@
                 echo "vulnerabilities_found=false" >> $GITHUB_OUTPUT
               fi
 
-          - name: PR commenter
-            uses: tfsec/tfsec-pr-commenter-action@v1.3.1
+          - name: PR Comments
+            if: github.event_name == 'pull_request'
+            uses: bridgecrewio/checkov-action@master
             with:
-              github_token: ${{ secrets.TOKEN }}
-              working_directory: ${{ inputs.working_directory}}
+              directory: ${{ inputs.working_directory }}
+              framework: ${{ inputs.framework }}
+              soft_fail: true
+              skip_check: ${{ inputs.skip_check }}
+              output_format: github_failed_only
+            env:
+              TOKEN: ${{ secrets.TOKEN }}
+            continue-on-error: true
     
           # - name: Get Trivy scan logs
           #   if: steps.check-vuln.outputs.vulnerabilities_found == 'true'
